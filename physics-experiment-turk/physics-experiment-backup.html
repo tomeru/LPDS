@@ -1,0 +1,226 @@
+<!-- based on https://github.com/longouyang/even-odd -->
+
+<html>
+
+  <head>
+    <title>Experiment on intuitive pysics</title>
+    <script src="jquery.min.js"></script>
+    <script src="mmturkey.js"></script>
+    <script src="underscore-min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <!-- <script src="flowplayer/example/flowplayer-3.2.6.min.js"></script> -->
+    <link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
+    <script src="http://vjs.zencdn.net/c/video.js"></script>
+  </head>
+
+  <body>
+
+
+    <div class="slide" id="instructions">
+
+      <div class="indicator-outer">
+        <div class="indicator" style="width: 10px"></div>
+      </div>
+
+      <img src="images/mitbcscsail.gif" alt="MIT">
+      <p id='logo-text'>MIT Computational Cognitive Science Lab</p>
+
+      <p class="block-text">You will asked to read an introduction, then asked to answer the same set of question for 6 different short videos.</p>
+
+      <p class="block-text">There will also be comprehension and attention checks. Participants who do not answer these checks correctly cannot be approved.</p> 
+
+
+      <button type="button" onclick="$('#instructions').hide(); $('#story').show(); this.blur()">Start</button>
+
+      <p class="block-text" id="legal">By answering the following questions, you are participating in a study being performed by cognitive scientists in the MIT Department of Brain and Cognitive Science. If you have questions about this research, please contact Tomer Ullman at tomeru@mit.edu. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you.</p>
+
+    </div>
+
+
+    <div class="slide" id="story">
+
+      <div class="indicator-outer">
+        <div class="indicator" style="width: 60px"></div>
+      </div>
+
+      <p class="block-text">
+        <p class="block-text">We're interested in how people understand physics. You will be shown several movies depicting physical simulations of objects interacting. The physics in these simulations does not necessarily work like the real world.</p>
+
+        <p class="block-text">The objects in these movies come in 3 <b>types</b>: <font color="#C9960C">yellow</font>, <font color="blue">blue</font> and <font color="red">red</font>. Each object type has a different mass - heavy, medium or light. Also, each object type can potentially exert forces on other types: object types either <i>attract</i>, <i>repel</i> or <i>don't interact</i> with one another.</p>
+
+        <p class="block-text">You will be viewing the objects from above, moving on a two-dimensional plane like a smooth white table-top. This plane has different types of patches: <font color="purple">purple</font>, <font color="brown">brown</font> or <font color="green">green</font>. Each patch type has a different roughess, and they can be either <i>very rough</i>, <i>a little rough</i>, or as <i>smooth as the white table-top</i>.</p>
+
+        <p class="block-text">Finally, there may or may not be a global force in the world, pushing all objects in a 
+        particular direction (north, south, east or west). </p>
+        
+        <p class="block-text">Below is an example of how a world might looks, with the animation paused:<p>
+        
+        <img src="images/0000.jpg" HEIGHT = "240" WIDTH = "320" alt="world example">
+
+        <p class="block-text">In the next pages you will be shown six 5-second videos of objects moving. Each video is drawn from a <b>different</b> world, and the physics may differ from video to video. For each video you will be asked the same questions about the physics of the situation.</p>
+        <p class="block-text">If the movie doesn't contain enough information to make a decision, for example it shows only red objects and you are asked about yellow objects, select the answer <i>"can't tell from movie"</i>. Please do <i>not</i> select this answer if you are simply uncertain about your answer. If you are uncertain, guess.</p>
+
+        <p class="block-text">
+         Check: What is the color of the patches in the example world? <input type="text" id="comprehension_1"></input>
+        </p>
+
+        <p class="block-text">
+          <button type="button" onclick="this.blur(); return submitStorySlide();">Next page</button>
+        </p>
+
+      </p>
+    </div>
+
+
+    <div class="slide" id="stage">
+
+      <div class="indicator-outer">
+        <div id="indicator-stage" class="indicator"></div>
+      </div>
+
+      <p>
+        When ready, play the video, and then answer the questions. You may to need watch a video several times to make a decision.
+      </p>      
+
+      <div id="video-container"></div>
+
+      <button type="button" onclick="experiment.play()">Replay video</button>
+
+      <ol>
+        <li class="question">How <b>massive</b> is the <font color="blue">blue</font> object? 
+          <select id="weight_blue">
+            <option value="unselected">--</option>
+            <option value="2">Heavy</option>
+            <option value="1">Medium</option>
+            <option value="0">Light</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How <b>massive</b> is the <font color="#C9960C">yellow</font> object?
+          <select id="weight_yellow">
+            <option value="unselected">--</option>
+            <option value="2">Heavy</option>
+            <option value="1">Medium</option>
+            <option value="0">Light</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How <b>massive</b> is the <font color="red">red</font> object? 
+          <select id="weight_red">
+            <option value="unselected">--</option>
+            <option value="2">Heavy</option>
+            <option value="0">Medium</option>
+            <option value="1">Light</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+
+        <li class="question">How <b>rough</b> is the <font color="green">green</font> patch?
+          <select id="rough_green">
+            <option value="unselected">--</option>
+            <option value="2">Very rough</option>
+            <option value="1">A little rough</option>
+            <option value="0">Smooth as the table-top</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How <b>rough</b> is the <font color="purple">purple</font> patch?
+          <select id="rough_purple">
+            <option value="unselected">--</option>
+            <option value="2">Very rough</option>
+            <option value="1">A little rough</option>
+            <option value="0">Smooth as the table-top</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How <b>rough</b> is the <font color="brown">brown</font> patch?
+          <select id="rough_brown">
+            <option value="unselected">--</option>
+            <option value="2">Very rough</option>
+            <option value="1">A little rough</option>
+            <option value="0">Smooth as the table-top</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+
+        <li class="question">How do <font color="blue">blue</font> and <font color="blue">blue</font> objects interact?
+          <select id="interact_blue_blue">
+            <option value="unselected">--</option>
+            <option value="attract">Attract</option>
+            <option value="repel">Repel</option>
+            <option value="none">None</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How do <font color="red">red</font> and <font color="red">red</font> objects interact?
+          <select id="interact_red_red">
+            <option value="unselected">--</option>
+            <option value="attract">Attract</option>
+            <option value="repel">Repel</option>
+            <option value="none">None</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How do <font color="#C9960C">yellow</font> and <font color="#C9960C">yellow</font> objects interact?
+          <select id="interact_yellow_yellow">
+            <option value="unselected">--</option>
+            <option value="attract">Attract</option>
+            <option value="repel">Repel</option>
+            <option value="none">None</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How do <font color="blue">blue</font> and <font color="#C9960C">yellow</font> objects interact?
+          <select id="interact_blue_yellow">
+            <option value="unselected">--</option>
+            <option value="attract">Attract</option>
+            <option value="repel">Repel</option>
+            <option value="none">None</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How do <font color="blue">blue</font> and <font color="red">red</font> objects interact?
+          <select id="interact_blue_red">
+            <option value="unselected">--</option>
+            <option value="attract">Attract</option>
+            <option value="repel">Repel</option>
+            <option value="none">None</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+        <li class="question">How do <font color="red">red</font> and <font color="#C9960C">yellow</font> objects interact?
+          <select id="interact_red_yellow">
+            <option value="unselected">--</option>
+            <option value="attract">Attract</option>
+            <option value="repel">Repel</option>
+            <option value="none">None</option>
+            <option value="-1">Can't tell from video</option>
+          </select>
+        </li>
+
+        <li class="question">In which direction is the global force pushing all objects?
+          <select id="wind">
+            <option value="unselected">--</option>
+            <option value="up">North</option>
+            <option value="down">South</option>
+            <option value="right">East</option>
+            <option value="left">West</option>
+            <option value="none">No such force</option>
+          </select>
+        </li>
+      </ol>
+
+      <p class="block-text">
+        <button type="button" onclick="this.blur(); return experiment.submitAndNext()">Next page</button>
+      </p>
+
+    </div>
+
+    <div class="slide" id="finished">
+      You're finished - thanks for participating! Submitting to Mechanical Turk...
+    </div>
+
+    <script src="experiment.js"></script>
+
+  </body>
+</html>
